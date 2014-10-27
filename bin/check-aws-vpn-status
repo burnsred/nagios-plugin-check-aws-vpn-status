@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+import argparse
+import sys
+
+import boto
+import boto.vpc
+
+parser = argparse.ArgumentParser(
+    description='Check the status of an AWS VPC VPN connection.'
+)
+parser.add_argument(
+    '--aws-access-key-id',
+    action='store',
+    required=True
+)
+parser.add_argument(
+    '--aws-secret-access-key',
+    action='store',
+    required=True
+)
+parser.add_argument(
+    '--region',
+    action='store',
+    required=True
+)
+parser.add_argument(
+    '--vpn-connection-id',
+    action='append',
+    dest='vpn_connection_ids',
+    required=True
+)
+
+args = parser.parse_args()
+
+boto_vpc_connection = boto.vpc.connect_to_region(
+    args.region,
+    aws_access_key_id=args.aws_access_key_id,
+    aws_secret_access_key=args.aws_secret_access_key
+)
+
+vpn_connections = boto_vpc_connection.get_all_vpn_connections(
+  vpn_connection_ids=args.vpn_connection_ids
+)
+
+for vpn_connection in vpn_connections:
+    is_up = any([tunnel.status == 'UP' for tunnel in vpn_connection.tunnels])
+    if not is_up:
+        print "CRITICAL - VPN connection {0} is down".format(vpn_connection.id)
+        sys.exit(1)
+
+print "OK - VPN connections up"
+sys.exit(0)
