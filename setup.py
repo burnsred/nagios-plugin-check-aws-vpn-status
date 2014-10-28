@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='nagios-plugin-check-aws-vpn-status',
-    version='0.0.1',
+    version='0.0.2',
     packages=[],
     scripts=['bin/check-aws-vpn-status'],
     include_package_data=True,

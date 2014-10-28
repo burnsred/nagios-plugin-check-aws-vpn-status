@@ -47,7 +47,7 @@ for vpn_connection in vpn_connections:
     is_up = any([tunnel.status == 'UP' for tunnel in vpn_connection.tunnels])
     if not is_up:
         print "CRITICAL - VPN connection {0} is down".format(vpn_connection.id)
-        sys.exit(1)
+        sys.exit(2)
 
 print "OK - VPN connections up"
 sys.exit(0)
