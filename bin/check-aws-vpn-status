@@ -30,8 +30,14 @@ parser.add_argument(
     dest='vpn_connection_ids',
     required=True
 )
+parser.add_argument(
+    '--strict-checking',
+    action='store_true'
+)
 
 args = parser.parse_args()
+
+strict_mode = args.strict_checking
 
 boto_vpc_connection = boto.vpc.connect_to_region(
     args.region,
@@ -40,12 +46,22 @@ boto_vpc_connection = boto.vpc.connect_to_region(
 )
 
 vpn_connections = boto_vpc_connection.get_all_vpn_connections(
-  vpn_connection_ids=args.vpn_connection_ids
+    vpn_connection_ids=args.vpn_connection_ids
 )
 
 for vpn_connection in vpn_connections:
-    is_up = any([tunnel.status == 'UP' for tunnel in vpn_connection.tunnels])
-    if not is_up:
+    tunnels_up = sum(
+        [tunnel.status == 'UP' for tunnel in vpn_connection.tunnels]
+    )
+    tunnels_num = len(vpn_connection.tunnels)
+    if strict_mode and tunnels_up < tunnels_num:
+        print "WARNING - VPN connection {} only has {}/{} tunnels up".format(
+            vpn_connection.id,
+            tunnels_up,
+            tunnels_num
+        )
+        sys.exit(1)
+    elif tunnels_up < 1:
         print "CRITICAL - VPN connection {0} is down".format(vpn_connection.id)
         sys.exit(2)
 
