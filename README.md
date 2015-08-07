@@ -3,10 +3,10 @@
 All arguments are required:
 
     usage: check-aws-vpn-status [-h]
-                                --aws-access-key-id AWS_ACCESS_KEY_ID
-                                --aws-secret-access-key AWS_SECRET_ACCESS_KEY
                                 --region REGION
                                 --vpn-connection-id VPN_CONNECTION_ID_1
+                                [--aws-access-key-id AWS_ACCESS_KEY_ID]
+                                [--aws-secret-access-key AWS_SECRET_ACCESS_KEY]
                                 [--vpn-connection-id VPN_CONNECTION_ID_2]
                                 [--strict-checking]
 
