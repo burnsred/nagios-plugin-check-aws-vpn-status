@@ -12,12 +12,14 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     '--aws-access-key-id',
     action='store',
-    required=True
+    required=False,
+    default=None
 )
 parser.add_argument(
     '--aws-secret-access-key',
     action='store',
-    required=True
+    required=False,
+    default=None
 )
 parser.add_argument(
     '--region',
